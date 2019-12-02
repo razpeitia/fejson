@@ -1,5 +1,5 @@
 -module(fejson).
--export([hello/0]).
+-export([encode/1, decode/1]).
 -on_load(init/0).
 
 % The name of the application we're writing. This is the name
@@ -22,8 +22,8 @@
 % A really nice person would make a pure Erlang fallback incase a NIF was
 % unable to load for a specific platform.
 
-hello() ->
-    not_loaded(?LINE).
+encode(_) -> not_loaded(?LINE).
+decode(_) -> not_loaded(?LINE).
 
 %% Iternal functions
 
