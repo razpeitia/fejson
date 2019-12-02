@@ -1,3 +1,4 @@
+#include <cstring>
 #include "erl_nif.h"
 
 static int
