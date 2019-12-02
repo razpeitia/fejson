@@ -22,13 +22,15 @@ unload(ErlNifEnv* env, void* priv)
 static ERL_NIF_TERM
 encode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
-
     return enif_make_int(env, 4);
 }
 
 static ERL_NIF_TERM
 decode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
+    if(!enif_is_binary(env, argv[0])) {
+        return enif_make_badarg(env);
+    }
     return enif_make_int(env, 2);
 }
 
