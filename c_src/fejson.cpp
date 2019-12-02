@@ -1,8 +1,9 @@
+#include <string>
 #include <cstring>
+#include <iostream>
 #include "erl_nif.h"
 
 #include "simdjson/jsonparser.h"
-
 using namespace simdjson;
 
 static int
@@ -42,8 +43,11 @@ decode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     }
 
     std::string mystring = std::string(bin.data, bin.data + bin.size);
-    ParsedJson pj;
-    pj.allocate_capacity(mystring.size()); // allocate memory for parsing up to p.size() bytes
+    std::cout << mystring << " " << mystring.size() << std::endl;
+    
+    //ParsedJson pj;
+    //pj.allocate_capacity(mystring.size());
+    /*
     // std::string may not overallocate so a copy will be needed
     const int res = json_parse(mystring, pj); // do the parsing, return 0 on success
     if(pj.is_valid()) {
@@ -51,6 +55,8 @@ decode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     } else {
         return enif_make_atom(env, "false");
     }
+    */
+    return enif_make_int(env, 4);
 }
 
 static ErlNifFunc nif_funcs[] = {

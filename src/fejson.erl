@@ -2,16 +2,6 @@
 -export([encode/1, decode/1]).
 -on_load(init/0).
 
-% The name of the application we're writing. This is the name
-% used for the Erlang .app file.
-
--define(APPNAME, fejson).
-
-% The name of the shared library we're going to load the NIF
-% code from. Defined in rebar.config as so_name.
-
--define(LIBNAME, fejson).
-
 %% API
 
 % NIF functions end up overriding the functions defined in this module. But
@@ -34,18 +24,15 @@ decode(_) -> not_loaded(?LINE).
 % functions.
 
 init() ->
-    SoName = case code:priv_dir(?APPNAME) of
-        {error, bad_name} ->
-            case filelib:is_dir(filename:join(["..", priv])) of
-                true ->
-                    filename:join(["..", priv, ?LIBNAME]);
-                _ ->
-                    filename:join([priv, ?LIBNAME])
-            end;
-        Dir ->
-            filename:join(Dir, ?LIBNAME)
+    PrivDir = case code:priv_dir(?MODULE) of
+        {error, _} ->
+            EbinDir = filename:dirname(code:which(?MODULE)),
+            AppPath = filename:dirname(EbinDir),
+            filename:join(AppPath, "priv");
+        Path ->
+            Path
     end,
-    erlang:load_nif(SoName, 0).
+    erlang:load_nif(filename:join(PrivDir, "fejson"), 0).
 
 % This is just a simple place holder. It mostly shouldn't ever be called
 % unless there was an unexpected error loading the NIF shared library.
