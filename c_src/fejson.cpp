@@ -1,6 +1,10 @@
 #include <cstring>
 #include "erl_nif.h"
 
+#include "simdjson/jsonparser.h"
+
+using namespace simdjson;
+
 static int
 load(ErlNifEnv* env, void** priv, ERL_NIF_TERM load_info)
 {
@@ -31,7 +35,22 @@ decode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     if(!enif_is_binary(env, argv[0])) {
         return enif_make_badarg(env);
     }
-    return enif_make_int(env, 2);
+    ErlNifBinary bin;
+
+    if(!enif_inspect_binary(env, argv[0], &bin)) {
+        return 0;
+    }
+
+    std::string mystring = std::string(bin.data, bin.data + bin.size);
+    ParsedJson pj;
+    pj.allocate_capacity(mystring.size()); // allocate memory for parsing up to p.size() bytes
+    // std::string may not overallocate so a copy will be needed
+    const int res = json_parse(mystring, pj); // do the parsing, return 0 on success
+    if(pj.is_valid()) {
+        return enif_make_atom(env, "true");
+    } else {
+        return enif_make_atom(env, "false");
+    }
 }
 
 static ErlNifFunc nif_funcs[] = {
