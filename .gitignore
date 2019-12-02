@@ -15,3 +15,13 @@ deps
 .rebar3
 _build/
 _checkouts/
+
+
+# enc
+compile_commands.json
+vc140.pdb
+
+# project libraries
+priv/*.dll
+priv/*.exp
+priv/*.lib
